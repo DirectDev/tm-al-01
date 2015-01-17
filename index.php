@@ -4,15 +4,25 @@ include 'sql.php';
 
 getMysqlConnection();
 
-$res = selectAllData(1);
-foreach ($res as $data) {
-    var_dump($data);
-    
-}
-
+$res = selectFirstQuartileOfPixelId(1);
+var_dump($res);
+//foreach ($res as $data) {
+//    var_dump($data);
+//    
+//}
+$res = selectMedianeOfPixelId(1);
 var_dump($res);
 
-cleanUpDB();
+$res = selectThirdQuartileOfPixelId(1);
+var_dump($res);
+
+$res = selectCentile10OfPixelId(1);
+var_dump($res);
+$res = selectCentile90OfPixelId(1);
+var_dump($res);
+$res = selectCentile95OfPixelId(1);
+var_dump($res);
+
 
 /* 
  * To change this license header, choose License Headers in Project Properties.
