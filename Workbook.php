@@ -18,9 +18,9 @@ class Workbook {
     public function __construct($pixel_id, $path = null) {
         $this->pixel_id = $pixel_id;
         $this->sqlQueries = new SqlQueries();
-        if($path)
+        if ($path)
             $this->name = $path;
-        $this->name .= 'Tradelab-advertiser_id-' . $this->sqlQueries->selectPixelName($pixel_id) . '-'.date('Y-m-d-H-i').'.xlsx';
+        $this->name .= 'Tradelab-advertiser_id-' . $this->sqlQueries->selectPixelName($pixel_id) . '-' . date('Y-m-d-H-i') . '.xlsx';
         $this->create();
     }
 
@@ -164,22 +164,22 @@ class Workbook {
         $this->category = 'Intent';
 
         $this->subcategory = 'Auto - Buyers';
-        $this->fillRowsFromData(7, 'B', 'C', true);
+        $this->fillRowsFromData(7, 'B', 'C', true, true);
 
         $this->subcategory = 'Shopping';
-        $this->fillRowsFromData(7, 'E', 'F', true);
+        $this->fillRowsFromData(7, 'E', 'F', true, true);
 
         $this->subcategory = 'Travel';
-        $this->fillRowsFromData(7, 'H', 'I', true);
+        $this->fillRowsFromData(7, 'H', 'I', true, true);
 
         $this->subcategory = 'Finance and Insurance';
-        $this->fillRowsFromData(7, 'K', 'L', true);
+        $this->fillRowsFromData(7, 'K', 'L', true, true);
 
         $this->subcategory = 'CPG';
-        $this->fillRowsFromData(12, 'K', 'L', true);
+        $this->fillRowsFromData(12, 'K', 'L', true, true);
 
         $this->subcategory = 'Services';
-        $this->fillRowsFromData(19, 'K', 'L', true);
+        $this->fillRowsFromData(19, 'K', 'L', true, true);
     }
 
     private function saveFile() {
@@ -201,7 +201,7 @@ class Workbook {
         return $this->sqlQueries->selectIndexDataByFrOfPixelId($this->pixel_id, $this->category, $this->subcategory, $fr);
     }
 
-    private function fillRowsFromData($start_row, $title_column, $index_column, $color = false) {
+    private function fillRowsFromData($start_row, $title_column, $index_column, $color = false, $border = false) {
         $array = $this->sqlQueries->selectDataOfPixelId($this->pixel_id, $this->category, $this->subcategory);
         $row = $start_row;
         foreach ($array as $line) {
@@ -211,6 +211,15 @@ class Workbook {
             $this->fillCell($index_column, $row, $line['index']);
             $row++;
         }
+
+        if (!$border)
+            return;
+
+        $cells = $title_column . $start_row . ':' . $index_column . ($row - 1);
+        $this->activeWorksheet->getStyle($cells)->getBorders()->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_MEDIUM);
+        $this->activeWorksheet->getStyle($cells)->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_MEDIUM);
+        $this->activeWorksheet->getStyle($cells)->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_MEDIUM);
+        $this->activeWorksheet->getStyle($cells)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_MEDIUM);
     }
 
     private function getColor($index) {
