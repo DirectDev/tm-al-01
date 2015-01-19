@@ -14,6 +14,7 @@ class SqlQueries {
 
     public function __construct() {
         $this->getMysqlConnection();
+        $this->createOutputTable();
     }
 
     private function getMysqlConnection() {
@@ -34,6 +35,12 @@ class SqlQueries {
     public function selectAllData($pixel_id) {
         $result_array = $this->executeQuery("select `index` from exelate_data where pixel_id = " . $pixel_id);
         return $result_array;
+    }
+
+    public function selectPixelName($pixel_id) {
+        $result_array = $this->executeQuery("select `name` from exelate_pixel where id = " . $pixel_id);
+        if (count($result_array))
+            return $result_array[0]["name"];
     }
 
     public function selectAVGOfPixelId($pixel_id) {
@@ -114,10 +121,10 @@ class SqlQueries {
         where ed.pixel_id = " . $pixel_id . " 
         and esc.name = '" . $category_name . "'
         and essc.name = '" . $subcategory_name . "'");
-        
+
         return $result_array;
     }
-    
+
     public function selectIndexDataByFrOfPixelId($pixel_id, $category_name, $subcategory_name, $fr) {
 
         $result_array = $this->executeQuery("
@@ -132,8 +139,17 @@ class SqlQueries {
         and es.fr like '%" . $fr . "%'
         limit 1");
 
-        if(count($result_array))
+        if (count($result_array))
             return $result_array[0]['index'];
+    }
+
+    public function createOutputTable() {
+        $this->executeQuery("create table if not exists `tradematic`.`exelate_data_output_version`( `id` int NOT NULL AUTO_INCREMENT , `pixel_id` int , `filename` varchar(55) , `timestamp` timestamp , PRIMARY KEY (`id`))  ;");
+    }
+
+    public function addFileToHistory($pixel_id, $filename) {
+        $this->executeQuery("insert into `exelate_data_output_version`(`id`,`pixel_id`,`filename`) 
+            values ( NULL," . $pixel_id . ",'" . $filename . "')");
     }
 
 }

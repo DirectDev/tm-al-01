@@ -15,9 +15,12 @@ class Workbook {
     private $mediane;
     private $centile90;
 
-    public function __construct($pixel_id) {
+    public function __construct($pixel_id, $path = null) {
         $this->pixel_id = $pixel_id;
         $this->sqlQueries = new SqlQueries();
+        if($path)
+            $this->name = $path;
+        $this->name .= 'Tradelab-advertiser_id-' . $this->sqlQueries->selectPixelName($pixel_id) . '-'.date('Y-m-d-H-i').'.xlsx';
         $this->create();
     }
 
@@ -25,8 +28,8 @@ class Workbook {
         $this->openTemplate();
         $this->writeFirstWorksheet();
         $this->writeSecondWorksheet();
-//        $this->writeThirdWorksheet();
-//        $this->writeFourthWorksheet();
+        $this->writeThirdWorksheet();
+        $this->writeFourthWorksheet();
         $this->saveFile();
     }
 
@@ -40,9 +43,6 @@ class Workbook {
         $this->centile10 = $this->sqlQueries->selectCentile10OfPixelId($this->pixel_id);
         $this->mediane = $this->sqlQueries->selectMedianeOfPixelId($this->pixel_id);
         $this->centile90 = $this->sqlQueries->selectCentile90OfPixelId($this->pixel_id);
-        var_dump($this->centile10);
-        var_dump($this->mediane);
-        var_dump($this->centile90);
 
         $this->fillCell('C', 9, $this->sqlQueries->selectAVGOfPixelId($this->pixel_id), false);
         $this->fillCell('C', 10, $this->sqlQueries->selectMINOfPixelId($this->pixel_id), false);
@@ -100,7 +100,7 @@ class Workbook {
         $this->fillRowsFromData(23, 'C', 'D');
 
         $this->subcategory = 'Career';
-        $this->fillRowsFromData(9, 'G', 'H', true);
+        $this->fillRowsFromData(9, 'G', 'H');
 
         $this->subcategory = 'Income Level';
         $this->fillRowsFromData(28, 'G', 'H');
@@ -113,28 +113,87 @@ class Workbook {
     }
 
     private function writeThirdWorksheet() {
-        $this->workbook->addSheet(new PHPExcel_Worksheet($this->workbook, 'INTERETS'), 2);
+        $this->activeWorksheet = $this->workbook->setActiveSheetIndex(2);
+        $this->category = 'Interest';
+
+        $this->subcategory = 'Beauty and Style';
+        $this->fillRowsFromData(5, 'B', 'C', true);
+
+        $this->subcategory = 'Diet and Fitness';
+        $this->fillRowsFromData(9, 'B', 'C', true);
+
+        $this->subcategory = 'Entertainment';
+        $this->fillRowsFromData(12, 'B', 'C', true);
+
+        $this->subcategory = 'Events';
+        $this->fillRowsFromData(22, 'B', 'C', true);
+
+        $this->subcategory = 'General Interest';
+        $this->fillRowsFromData(30, 'B', 'C', true);
+
+        $this->subcategory = 'Home Improvement';
+        $this->fillRowsFromData(5, 'E', 'F', true);
+
+        $this->subcategory = 'Hobbies';
+        $this->fillRowsFromData(11, 'E', 'F', true);
+
+        $this->subcategory = 'Parenting';
+        $this->fillRowsFromData(21, 'E', 'F', true);
+
+        $this->subcategory = 'Politics';
+        $this->fillRowsFromData(27, 'E', 'F', true);
+
+        $this->subcategory = 'Automotive Owners';
+        $this->fillRowsFromData(29, 'E', 'F', true);
+
+        $this->subcategory = 'Sports';
+        $this->fillRowsFromData(35, 'E', 'F', true);
+
+        $this->subcategory = 'Pets';
+        $this->fillRowsFromData(38, 'E', 'F', true);
+
+        $this->subcategory = 'Finance';
+        $this->fillRowsFromData(40, 'E', 'F', true);
+
+        $this->subcategory = 'Tech - Enthusiasts';
+        $this->fillRowsFromData(7, 'H', 'I', true);
     }
 
     private function writeFourthWorksheet() {
-        $this->workbook->addSheet(new PHPExcel_Worksheet($this->workbook, 'INTENTIONS'), 3);
+        $this->activeWorksheet = $this->workbook->setActiveSheetIndex(3);
+        $this->category = 'Intent';
+
+        $this->subcategory = 'Auto - Buyers';
+        $this->fillRowsFromData(7, 'B', 'C', true);
+
+        $this->subcategory = 'Shopping';
+        $this->fillRowsFromData(7, 'E', 'F', true);
+
+        $this->subcategory = 'Travel';
+        $this->fillRowsFromData(7, 'H', 'I', true);
+
+        $this->subcategory = 'Finance and Insurance';
+        $this->fillRowsFromData(7, 'K', 'L', true);
+
+        $this->subcategory = 'CPG';
+        $this->fillRowsFromData(12, 'K', 'L', true);
+
+        $this->subcategory = 'Services';
+        $this->fillRowsFromData(19, 'K', 'L', true);
     }
 
     private function saveFile() {
         $objWriter = new PHPExcel_Writer_Excel2007($this->workbook);
         $objWriter->save($this->name);
-        var_dump('fin');
+        $this->sqlQueries->addFileToHistory($this->pixel_id, $this->name);
     }
 
     private function fillCell($column, $row, $value, $color = false) {
         $this->activeWorksheet->setCellValue($column . $row, $value);
         if ($color) {
-//            $color = $this->getColor($value);
-//        var_dump($value);
-//        var_dump($color);
             $this->activeWorksheet->getStyle($column . $row)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
-//            $this->activeWorksheet->getStyle($column . $row)->getFill()->getStartColor()->setARGB($color);
-            $this->activeWorksheet->getStyle($column . $row)->getFont()->getColor()->setARGB($color);
+            $this->activeWorksheet->getStyle($column . $row)->getFill()->getStartColor()->setARGB($color);
+//            $this->activeWorksheet->getStyle($column . $row)->getFont()->getColor()->setARGB($color);
         }
     }
 
