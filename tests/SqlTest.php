@@ -1,49 +1,50 @@
 <?php
 
-include '/../sql.php';
+include '/../sqlQueries.php';
+
+use Tradematic\SqlQueries;
 
 class SqlTest extends PHPUnit_Framework_TestCase {
 
+    private $sqlQueries;
+
+    public function __construct() {
+        $this->sqlQueries = new SqlQueries();
+    }
+
     public function testSelectFirstQuartileOfPixelId() {
-        getMysqlConnection();
-        $this->assertNotEquals(selectFirstQuartileOfPixelId(1), false);
-        $this->assertEquals(selectFirstQuartileOfPixelId(1), 1.30);
+        $this->assertNotEquals($this->sqlQueries->selectFirstQuartileOfPixelId(1), false);
+        $this->assertEquals($this->sqlQueries->selectFirstQuartileOfPixelId(1), 1.30);
     }
 
     public function testSelectMedianeOfPixelId() {
-        getMysqlConnection();
-        $this->assertNotEquals(selectMedianeOfPixelId(1), false);
-        $this->assertEquals(selectMedianeOfPixelId(1), 1.51);
+        $this->assertNotEquals($this->sqlQueries->selectMedianeOfPixelId(1), false);
+        $this->assertEquals($this->sqlQueries->selectMedianeOfPixelId(1), 1.51);
     }
 
     public function testSelectThirdQuartileOfPixelId() {
-        getMysqlConnection();
-        $this->assertNotEquals(selectThirdQuartileOfPixelId(1), false);
-        $this->assertEquals(selectThirdQuartileOfPixelId(1), 1.78);
+        $this->assertNotEquals($this->sqlQueries->selectThirdQuartileOfPixelId(1), false);
+        $this->assertEquals($this->sqlQueries->selectThirdQuartileOfPixelId(1), 1.78);
     }
 
     public function testCentile10OfPixelId() {
-        getMysqlConnection();
-        $this->assertNotEquals(selectCentile10OfPixelId(1), false);
-        $this->assertEquals(selectCentile10OfPixelId(1), 1.04);
+        $this->assertNotEquals($this->sqlQueries->selectCentile10OfPixelId(1), false);
+        $this->assertEquals($this->sqlQueries->selectCentile10OfPixelId(1), 1.04);
     }
 
     public function testCentile90OfPixelId() {
-        getMysqlConnection();
-        $this->assertNotEquals(selectCentile90OfPixelId(1), false);
-        $this->assertEquals(selectCentile90OfPixelId(1), 2.07);
+        $this->assertNotEquals($this->sqlQueries->selectCentile90OfPixelId(1), false);
+        $this->assertEquals($this->sqlQueries->selectCentile90OfPixelId(1), 2.07);
     }
 
     public function testCentile95OfPixelId() {
-        getMysqlConnection();
-        $this->assertNotEquals(selectCentile95OfPixelId(1), false);
-        $this->assertEquals(selectCentile95OfPixelId(1), 2.37);
+        $this->assertNotEquals($this->sqlQueries->selectCentile95OfPixelId(1), false);
+        $this->assertEquals($this->sqlQueries->selectCentile95OfPixelId(1), 2.37);
     }
-    
+
     public function testSelectDataOfPixelId() {
-        getMysqlConnection();
-        $this->assertNotEquals(selectDataOfPixelId(1, 'Demographic', 'Age'), false);
-        $this->assertEquals(count(selectDataOfPixelId(1, 'Demographic', 'Age')), 12);
+        $this->assertNotEquals($this->sqlQueries->selectDataOfPixelId(1, 'Demographic', 'Age'), false);
+        $this->assertEquals(count($this->sqlQueries->selectDataOfPixelId(1, 'Demographic', 'Age')), 12);
     }
 
 }
