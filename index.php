@@ -23,6 +23,9 @@ var_dump($res);
 $res = selectCentile95OfPixelId(1);
 var_dump($res);
 
+$res = selectDataOfPixelId(1, 'Demographic', 'Age') ;
+var_dump($res);
+
 
 /* 
  * To change this license header, choose License Headers in Project Properties.

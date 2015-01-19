@@ -105,4 +105,19 @@ function selectMaxOfPercentageOfPixelId($pixel_id, $percentage) {
     return max($filtered_array);
 }
 
+function selectDataOfPixelId($pixel_id, $category_name, $subcategory_name) {
+
+    $result_array = executeQuery("
+        select es.id, `index` , es.name as segment_name, essc.name as subcategory_name, esc.name as category_name
+        from exelate_data ed
+        inner join exelate_segment es on es.id = ed.segment_id
+        inner join exelate_segment_subcategory essc on essc.id = es.segment_subcategory_id
+        inner join exelate_segment_category esc on esc.id = essc.segment_category_id
+        where ed.pixel_id = " . $pixel_id . " 
+        and esc.name = '" . $category_name . "'
+        and essc.name = '" . $subcategory_name . "'");
+
+    return $result_array;
+}
+
 ?>

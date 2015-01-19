@@ -39,5 +39,11 @@ class SqlTest extends PHPUnit_Framework_TestCase {
         $this->assertNotEquals(selectCentile95OfPixelId(1), false);
         $this->assertEquals(selectCentile95OfPixelId(1), 2.37);
     }
+    
+    public function testSelectDataOfPixelId() {
+        getMysqlConnection();
+        $this->assertNotEquals(selectDataOfPixelId(1, 'Demographic', 'Age'), false);
+        $this->assertEquals(count(selectDataOfPixelId(1, 'Demographic', 'Age')), 12);
+    }
 
 }
