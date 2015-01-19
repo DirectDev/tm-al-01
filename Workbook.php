@@ -5,7 +5,7 @@ use Tradematic\SqlQueries;
 class Workbook {
 
     private $workbook;
-    private $name = 'obj_writer.xlsx';
+    private $name;
     private $activeWorksheet;
     private $sqlQueries;
     private $pixel_id;
@@ -34,7 +34,7 @@ class Workbook {
     }
 
     private function openTemplate() { // a tester avec version xlsx
-        $this->workbook = PHPExcel_IOFactory::load('template.xls');
+        $this->workbook = PHPExcel_IOFactory::load('template.xlsx');
     }
 
     private function writeFirstWorksheet() {
@@ -192,8 +192,7 @@ class Workbook {
         $this->activeWorksheet->setCellValue($column . $row, $value);
         if ($color) {
             $this->activeWorksheet->getStyle($column . $row)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
-            $this->activeWorksheet->getStyle($column . $row)->getFill()->getStartColor()->setARGB($color);
-//            $this->activeWorksheet->getStyle($column . $row)->getFont()->getColor()->setARGB($color);
+            $this->activeWorksheet->getStyle($column . $row)->getFill()->getStartColor()->setRGB($color);
         }
     }
 
@@ -207,8 +206,8 @@ class Workbook {
         foreach ($array as $line) {
             if ($color !== false)
                 $color = $this->getColor($line['index']);
-            $this->fillCell($title_column, $row, $line['fr'], $color);
-            $this->fillCell($index_column, $row, $line['index']);
+            $this->fillCell($title_column, $row, $line['fr'], 'F2F2F2');
+            $this->fillCell($index_column, $row, $line['index'], $color);
             $row++;
         }
 
@@ -224,10 +223,10 @@ class Workbook {
 
     private function getColor($index) {
         if ($index >= $this->centile90)
-            return PHPExcel_Style_Color::COLOR_GREEN;
+            return '00FF00';
         if ($index >= $this->mediane)
-            return PHPExcel_Style_Color::COLOR_YELLOW;
-        return PHPExcel_Style_Color::COLOR_RED;
+            return 'FFFF00';
+        return 'FF0000';
     }
 
 }

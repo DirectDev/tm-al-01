@@ -11,7 +11,11 @@ if (!defined('PHPEXCEL_ROOT')) {
     require(PHPEXCEL_ROOT . 'PHPExcel/Autoloader.php');
 }
 
+set_time_limit(60);
+
 $file = 'file/';
+if (!file_exists($file))
+    die('file does not exist');
 
 new Workbook(1, $file);
 new Workbook(2, $file);
