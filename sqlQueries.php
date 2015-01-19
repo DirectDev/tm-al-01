@@ -106,7 +106,7 @@ class SqlQueries {
     public function selectDataOfPixelId($pixel_id, $category_name, $subcategory_name) {
 
         $result_array = $this->executeQuery("
-        select es.id, `index` , es.name as segment_name, essc.name as subcategory_name, esc.name as category_name
+        select es.id, `index` , es.name as segment_name, essc.name as subcategory_name, esc.name as category_name, es.fr as fr
         from exelate_data ed
         inner join exelate_segment es on es.id = ed.segment_id
         inner join exelate_segment_subcategory essc on essc.id = es.segment_subcategory_id
@@ -114,8 +114,26 @@ class SqlQueries {
         where ed.pixel_id = " . $pixel_id . " 
         and esc.name = '" . $category_name . "'
         and essc.name = '" . $subcategory_name . "'");
-
+        
         return $result_array;
+    }
+    
+    public function selectIndexDataByFrOfPixelId($pixel_id, $category_name, $subcategory_name, $fr) {
+
+        $result_array = $this->executeQuery("
+        select es.id, `index` , es.name as segment_name, essc.name as subcategory_name, esc.name as category_name, es.fr as fr
+        from exelate_data ed
+        inner join exelate_segment es on es.id = ed.segment_id
+        inner join exelate_segment_subcategory essc on essc.id = es.segment_subcategory_id
+        inner join exelate_segment_category esc on esc.id = essc.segment_category_id
+        where ed.pixel_id = " . $pixel_id . " 
+        and esc.name = '" . $category_name . "'
+        and essc.name = '" . $subcategory_name . "'
+        and es.fr like '%" . $fr . "%'
+        limit 1");
+
+        if(count($result_array))
+            return $result_array[0]['index'];
     }
 
 }
