@@ -11,7 +11,7 @@ if (!defined('PHPEXCEL_ROOT')) {
     require(PHPEXCEL_ROOT . 'PHPExcel/Autoloader.php');
 }
 
-set_time_limit(60);
+set_time_limit(120);
 
 $file = 'file/';
 if (!file_exists($file))

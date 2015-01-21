@@ -14,6 +14,8 @@ class Workbook {
     private $centile10;
     private $mediane;
     private $centile90;
+    private $actual_row;
+    private $colors;
 
     public function __construct($pixel_id, $path = null) {
         $this->pixel_id = $pixel_id;
@@ -30,6 +32,7 @@ class Workbook {
         $this->writeSecondWorksheet();
         $this->writeThirdWorksheet();
         $this->writeFourthWorksheet();
+        $this->activeWorksheet = $this->workbook->setActiveSheetIndex(0);
         $this->saveFile();
     }
 
@@ -56,6 +59,14 @@ class Workbook {
         $this->fillCell('I', 10, $this->mediane, false);
         $this->fillCell('I', 11, $this->centile90, false);
         $this->fillCell('I', 12, $this->sqlQueries->selectCentile95OfPixelId($this->pixel_id), false);
+
+
+        $this->colors = array(
+            $this->centile10 => "255,00,00",
+            $this->mediane => "255,255,00",
+            $this->centile90 => "00, 255, 00",
+            $this->centile90 => "00, 255, 00",
+        );
     }
 
     private function writeSecondWorksheet() {
@@ -97,19 +108,21 @@ class Workbook {
         $this->fillCell('D', 21, $this->getIndexForFr('Femme'));
 
         $this->subcategory = 'Age';
-        $this->fillRowsFromData(23, 'C', 'D');
+        $this->fillRowsFromData(23, 'C', 'D', true, true);
 
         $this->subcategory = 'Career';
-        $this->fillRowsFromData(9, 'G', 'H');
+        $this->actual_row = 7;
+        $this->fillRowsFromData($this->actual_row, 'G', 'H', true, true);
 
         $this->subcategory = 'Income Level';
-        $this->fillRowsFromData(28, 'G', 'H');
+        $this->fillRowsFromData($this->actual_row, 'G', 'H', true, true);
 
         $this->subcategory = 'Household';
-        $this->fillRowsFromData(9, 'J', 'K');
+        $this->actual_row = 7;
+        $this->fillRowsFromData($this->actual_row, 'J', 'K', true, true);
 
         $this->subcategory = 'Urbanicity';
-        $this->fillRowsFromData(16, 'J', 'K');
+        $this->fillRowsFromData($this->actual_row, 'J', 'K', true, true);
     }
 
     private function writeThirdWorksheet() {
@@ -117,46 +130,49 @@ class Workbook {
         $this->category = 'Interest';
 
         $this->subcategory = 'Beauty and Style';
-        $this->fillRowsFromData(5, 'B', 'C', true);
+        $this->actual_row = 5;
+        $this->fillRowsFromData($this->actual_row, 'B', 'C', true, true);
 
         $this->subcategory = 'Diet and Fitness';
-        $this->fillRowsFromData(9, 'B', 'C', true);
+        $this->fillRowsFromData($this->actual_row, 'B', 'C', true, true);
 
         $this->subcategory = 'Entertainment';
-        $this->fillRowsFromData(12, 'B', 'C', true);
+        $this->fillRowsFromData($this->actual_row, 'B', 'C', true, true);
 
         $this->subcategory = 'Events';
-        $this->fillRowsFromData(22, 'B', 'C', true);
+        $this->fillRowsFromData($this->actual_row, 'B', 'C', true, true);
 
         $this->subcategory = 'General Interest';
-        $this->fillRowsFromData(30, 'B', 'C', true);
+        $this->fillRowsFromData($this->actual_row, 'B', 'C', true, true);
 
         $this->subcategory = 'Home Improvement';
-        $this->fillRowsFromData(5, 'E', 'F', true);
+        $this->actual_row = 5;
+        $this->fillRowsFromData($this->actual_row, 'E', 'F', true, true);
 
         $this->subcategory = 'Hobbies';
-        $this->fillRowsFromData(11, 'E', 'F', true);
+        $this->fillRowsFromData($this->actual_row, 'E', 'F', true, true);
 
         $this->subcategory = 'Parenting';
-        $this->fillRowsFromData(21, 'E', 'F', true);
+        $this->fillRowsFromData($this->actual_row, 'E', 'F', true, true);
 
         $this->subcategory = 'Politics';
-        $this->fillRowsFromData(27, 'E', 'F', true);
+        $this->fillRowsFromData($this->actual_row, 'E', 'F', true, true);
 
         $this->subcategory = 'Automotive Owners';
-        $this->fillRowsFromData(29, 'E', 'F', true);
+        $this->fillRowsFromData($this->actual_row, 'E', 'F', true, true);
 
         $this->subcategory = 'Sports';
-        $this->fillRowsFromData(35, 'E', 'F', true);
+        $this->fillRowsFromData($this->actual_row, 'E', 'F', true, true);
 
         $this->subcategory = 'Pets';
-        $this->fillRowsFromData(38, 'E', 'F', true);
+        $this->fillRowsFromData($this->actual_row, 'E', 'F', true, true);
 
         $this->subcategory = 'Finance';
-        $this->fillRowsFromData(40, 'E', 'F', true);
+        $this->fillRowsFromData($this->actual_row, 'E', 'F', true, true);
 
         $this->subcategory = 'Tech - Enthusiasts';
-        $this->fillRowsFromData(7, 'H', 'I', true);
+        $this->actual_row = 7;
+        $this->fillRowsFromData($this->actual_row, 'H', 'I', true, true);
     }
 
     private function writeFourthWorksheet() {
@@ -164,22 +180,26 @@ class Workbook {
         $this->category = 'Intent';
 
         $this->subcategory = 'Auto - Buyers';
-        $this->fillRowsFromData(7, 'B', 'C', true, true);
+        $this->actual_row = 7;
+        $this->fillRowsFromData($this->actual_row, 'B', 'C', true, true);
 
         $this->subcategory = 'Shopping';
-        $this->fillRowsFromData(7, 'E', 'F', true, true);
+        $this->actual_row = 7;
+        $this->fillRowsFromData($this->actual_row, 'E', 'F', true, true);
 
         $this->subcategory = 'Travel';
-        $this->fillRowsFromData(7, 'H', 'I', true, true);
+        $this->actual_row = 7;
+        $this->fillRowsFromData($this->actual_row, 'H', 'I', true, true);
 
         $this->subcategory = 'Finance and Insurance';
-        $this->fillRowsFromData(7, 'K', 'L', true, true);
+        $this->actual_row = 7;
+        $this->fillRowsFromData($this->actual_row, 'K', 'L', true, true);
 
         $this->subcategory = 'CPG';
-        $this->fillRowsFromData(12, 'K', 'L', true, true);
+        $this->fillRowsFromData($this->actual_row, 'K', 'L', true, true);
 
         $this->subcategory = 'Services';
-        $this->fillRowsFromData(19, 'K', 'L', true, true);
+        $this->fillRowsFromData($this->actual_row, 'K', 'L', true, true);
     }
 
     private function saveFile() {
@@ -202,6 +222,8 @@ class Workbook {
 
     private function fillRowsFromData($start_row, $title_column, $index_column, $color = false, $border = false) {
         $array = $this->sqlQueries->selectDataOfPixelId($this->pixel_id, $this->category, $this->subcategory);
+        if (!count($array))
+            return;
         $row = $start_row;
         foreach ($array as $line) {
             if ($color !== false)
@@ -211,6 +233,8 @@ class Workbook {
             $row++;
         }
 
+        $this->actual_row = ($row + 1);
+
         if (!$border)
             return;
 
@@ -219,14 +243,69 @@ class Workbook {
         $this->activeWorksheet->getStyle($cells)->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_MEDIUM);
         $this->activeWorksheet->getStyle($cells)->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_MEDIUM);
         $this->activeWorksheet->getStyle($cells)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_MEDIUM);
+
+        return;
     }
 
     private function getColor($index) {
-        if ($index >= $this->centile90)
-            return '00FF00';
-        if ($index >= $this->mediane)
-            return 'FFFF00';
+        if ($index > $this->centile10)
+            return $this->getColorCode($index);
         return 'FF0000';
+    }
+
+    private function getColorCode($var) {
+
+        $colors_keys = array_keys($this->colors);
+        $colors_RGB = array_values($this->colors);
+        $dest_color = null;
+        $count = sizeof($this->colors) - 1;
+
+        for ($i = 0; $i < $count; $i++) {
+
+            if ($var >= $colors_keys[$i] && $var < $colors_keys[$i + 1]) {
+
+                $rgb1 = explode(",", $colors_RGB[$i]);
+                $rgb2 = explode(",", $colors_RGB[$i + 1]);
+
+                for ($j = 0; $j < 3; $j++) {
+
+                    $c = (max($rgb1[$j], $rgb2[$j]) - min($rgb1[$j], $rgb2[$j])) / (max($colors_keys[$i], $colors_keys[$i + 1]) - min($colors_keys[$i], $colors_keys[$i + 1]));
+                    if ($rgb1[$j] < $rgb2[$j]) {
+                        $dest_color .= round(max($rgb1[$j], $rgb2[$j]) - ((max($colors_keys[$i], $colors_keys[$i + 1]) - $var) * $c));
+                    } else {
+                        $dest_color .= round(min($rgb1[$j], $rgb2[$j]) + ((max($colors_keys[$i], $colors_keys[$i + 1]) - $var) * $c));
+                    }
+                    if ($j != 2) {
+                        $dest_color.=",";
+                    }
+                }
+            }
+        }
+        if ($var <= $colors_keys[0]) {
+            $dest_color = $colors_RGB[0];
+        }
+        if ($var >= $colors_keys[sizeof($this->colors) - 1]) {
+            $dest_color = $colors_RGB[sizeof($this->colors) - 1];
+        }
+
+        return $this->convertColor($dest_color);
+    }
+
+    private function convertColor($color) {
+        $hex_RGB = null;
+        if (!is_array($color)) {
+            $color = explode(",", $color);
+        }
+
+        foreach ($color as $value) {
+            $hex_value = dechex($value);
+            if (strlen($hex_value) < 2) {
+                $hex_value = "0" . $hex_value;
+            }
+            $hex_RGB.=$hex_value;
+        }
+
+        return $hex_RGB;
     }
 
 }
